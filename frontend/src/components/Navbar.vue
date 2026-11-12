@@ -10,7 +10,8 @@ import {
   History,
   LayoutDashboard,
   LogOut,
-  UserCheck
+  User,
+  ShieldCheck
 } from 'lucide-vue-next';
 
 const router = useRouter();
@@ -27,6 +28,12 @@ const navItems = [
 
 const currentPath = computed(() => route.path);
 
+const initials = computed(() => {
+  const last = authStore.user?.lastName?.[0] || 'E';
+  const first = authStore.user?.firstName?.[0] || 'M';
+  return (last + first).toUpperCase();
+});
+
 function handleLogout() {
   authStore.logout();
   router.push('/login');
@@ -42,7 +49,7 @@ function handleLogout() {
             <GraduationCap :size="24" />
           </div>
           <div class="logo-text">
-            <span class="logo-title">ЕГЭ-Пробники</span>
+            <span class="logo-title">EduMetric</span>
             <span class="logo-subtitle">Учет и аналитика</span>
           </div>
         </router-link>
@@ -62,17 +69,20 @@ function handleLogout() {
       </div>
 
       <div class="nav-right">
-        <div v-if="authStore.user" class="user-info">
-          <div class="user-avatar">
-            <UserCheck :size="18" />
-          </div>
-          <div class="user-details">
-            <span class="user-name">{{ authStore.user.name }}</span>
-            <span class="user-role">Учитель</span>
-          </div>
+        <div v-if="authStore.user" class="user-block">
+          <router-link to="/profile" class="user-profile-link" :class="{ active: currentPath === '/profile' }" title="Перейти в профиль">
+            <div class="user-avatar-initials">
+              {{ initials }}
+            </div>
+            <div class="user-details">
+              <span class="user-name">{{ authStore.userFullName }}</span>
+              <span class="user-role">{{ authStore.user.role || 'Учитель' }}</span>
+            </div>
+          </router-link>
+
           <button class="btn btn-secondary btn-sm logout-btn" @click="handleLogout" title="Выйти из аккаунта">
             <LogOut :size="16" />
-            <span>Выйти</span>
+            <span class="logout-label">Выйти</span>
           </button>
         </div>
       </div>
@@ -131,10 +141,11 @@ function handleLogout() {
 }
 
 .logo-title {
-  font-weight: 700;
-  font-size: 1.1rem;
+  font-weight: 800;
+  font-size: 1.15rem;
   color: var(--gray-900);
   line-height: 1.2;
+  letter-spacing: -0.01em;
 }
 
 .logo-subtitle {
@@ -181,47 +192,75 @@ function handleLogout() {
   align-items: center;
 }
 
-.user-info {
+.user-block {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 0.75rem;
 }
 
-.user-avatar {
-  width: 34px;
-  height: 34px;
-  border-radius: var(--radius-full);
+.user-profile-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.user-profile-link:hover {
   background: var(--gray-100);
+  text-decoration: none;
+}
+
+.user-profile-link.active {
+  background: var(--primary-light);
+}
+
+.user-avatar-initials {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: var(--primary-light);
   color: var(--primary);
+  font-size: 0.85rem;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1px solid #c7d2fe;
 }
 
 .user-details {
   display: flex;
   flex-direction: column;
   line-height: 1.2;
+  text-align: left;
 }
 
 .user-name {
   font-size: 0.875rem;
   font-weight: 600;
   color: var(--gray-800);
+  max-width: 170px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .user-role {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--gray-400);
 }
 
 .logout-btn {
-  margin-left: 0.5rem;
+  margin-left: 0.25rem;
 }
 
 @media (max-width: 900px) {
   .logo-text,
-  .user-details {
+  .user-details,
+  .logout-label {
     display: none;
   }
   .nav-left {

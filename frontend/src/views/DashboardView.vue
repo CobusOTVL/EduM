@@ -26,13 +26,17 @@ const classesCount = computed(() => classesStore.classes.length);
 const studentsCount = computed(() => classesStore.students.length);
 const testsCount = computed(() => mockTestsStore.mockTests.length);
 
+const userTestIds = computed(() => new Set(mockTestsStore.mockTests.map((t) => t.id)));
+
 const avgScoreAll = computed(() => {
   let totalSecondary = 0;
   let count = 0;
   for (const sheet of resultsStore.resultSheets) {
-    for (const score of Object.values(sheet.studentScores)) {
-      totalSecondary += score.secondaryScore;
-      count++;
+    if (userTestIds.value.has(sheet.mockTestId)) {
+      for (const score of Object.values(sheet.studentScores)) {
+        totalSecondary += score.secondaryScore;
+        count++;
+      }
     }
   }
   return count > 0 ? Math.round((totalSecondary / count) * 10) / 10 : 0;
@@ -65,9 +69,9 @@ function hasResults(testId: string) {
       <div class="welcome-content">
         <div class="welcome-badge">
           <Sparkles :size="16" />
-          <span>Система учета диагностик и пробников</span>
+          <span>EduMetric · Система учета диагностик и пробников</span>
         </div>
-        <h1 class="welcome-title">Здравствуйте, {{ authStore.user?.name || 'Учитель' }}!</h1>
+        <h1 class="welcome-title">Здравствуйте, {{ authStore.userFullName || 'Учитель' }}!</h1>
         <p class="welcome-subtitle">
           Управляйте классами, вносите баллы за пробные экзамены ЕГЭ/ОГЭ, отслеживайте динамику и анализируйте результаты учеников.
         </p>

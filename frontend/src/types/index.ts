@@ -21,12 +21,31 @@ export interface SubjectInfo {
 export interface User {
   id: string;
   username: string;
-  name: string;
   email: string;
+  firstName: string;
+  lastName: string;
+  middleName?: string;
+  name: string; // Полное ФИО (Фамилия Имя Отчество)
+  role?: string;
+  subject?: string;
+  school?: string;
+  bio?: string;
+  phone?: string;
+  password?: string;
+}
+
+export interface RegisterData {
+  email: string;
+  password: string;
+  password_confirm: string;
+  first_name: string;
+  last_name: string;
+  middle_name?: string;
 }
 
 export interface Student {
   id: string;
+  userId?: string;
   classId: string;
   fullName: string;
   createdAt: string;
@@ -34,6 +53,7 @@ export interface Student {
 
 export interface SchoolClass {
   id: string;
+  userId?: string;
   number: number;
   letter: string;
   subject: string;
@@ -48,6 +68,7 @@ export interface TaskSpec {
 
 export interface MockTest {
   id: string;
+  userId?: string;
   title: string;
   date: string;
   classId: string;
