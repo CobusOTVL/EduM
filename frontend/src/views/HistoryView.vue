@@ -152,6 +152,7 @@ function toggleExpand(testId: string) {
         <div class="filter-item">
           <label class="filter-label">Выберите класс:</label>
           <select v-model="selectedClassId" class="form-select select-field">
+            <option v-if="classesStore.classes.length === 0" value="">Нет добавленных классов</option>
             <option v-for="cls in classesStore.classes" :key="cls.id" :value="cls.id">
               {{ cls.number }} «{{ cls.letter }}» ({{ cls.subject }})
             </option>

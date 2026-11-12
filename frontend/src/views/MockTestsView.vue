@@ -81,6 +81,13 @@ const currentFormMaxPrimary = computed(() => {
 });
 
 function openCreateModal() {
+  if (classesStore.classes.length === 0) {
+    if (confirm('У вас пока нет созданных классов. Чтобы назначить пробник, сначала добавьте класс. Перейти в раздел «Классы»?')) {
+      router.push('/classes');
+    }
+    return;
+  }
+
   isEditing.value = false;
   editingTestId.value = null;
 

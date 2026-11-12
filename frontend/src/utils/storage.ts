@@ -4,23 +4,50 @@ import { getDefaultTasksForSubject, calculateMaxPrimary, convertPrimaryToSeconda
 const STORAGE_KEYS = {
   USER: 'mock_app_user',
   TOKEN: 'mock_app_token',
+  REGISTERED_USERS: 'mock_app_registered_users',
   CLASSES: 'mock_app_classes',
   STUDENTS: 'mock_app_students',
   MOCK_TESTS: 'mock_app_tests',
   RESULTS: 'mock_app_results',
-  INITIALIZED: 'mock_app_init_v1',
+  INITIALIZED: 'mock_app_init_v3',
 };
 
 export const defaultUser: User = {
   id: 'usr-1',
   username: 'teacher',
-  name: 'Анна Павловна Смирнова',
-  email: 'smirnova@school.edu',
+  email: 'teacher@edumetric.ru',
+  firstName: 'Анна',
+  lastName: 'Смирнова',
+  middleName: 'Павловна',
+  name: 'Смирнова Анна Павловна',
+  role: 'Учитель высшей категории',
+  subject: 'Математика (профиль)',
+  school: 'Лицей «Вторая школа»',
+  bio: 'Подготовка выпускников к сдаче профильного ЕГЭ по математике на 80+ баллов',
+  phone: '+7 (999) 123-45-67',
+  password: 'teacher123',
+};
+
+export const adminUser: User = {
+  id: 'usr-admin',
+  username: 'admin',
+  email: 'admin@edumetric.ru',
+  firstName: 'Дмитрий',
+  lastName: 'Ковалев',
+  middleName: 'Сергеевич',
+  name: 'Ковалев Дмитрий Сергеевич',
+  role: 'Методист / Администратор',
+  subject: 'Информатика и ИКТ',
+  school: 'ГБОУ Лицей №1533',
+  bio: 'Куратор направления естественно-научного профиля и ИТ-классов',
+  phone: '+7 (999) 765-43-21',
+  password: 'admin123',
 };
 
 const defaultClasses: SchoolClass[] = [
   {
     id: 'cls-11a',
+    userId: 'usr-1',
     number: 11,
     letter: 'А',
     subject: 'Математика (профиль)',
@@ -29,6 +56,7 @@ const defaultClasses: SchoolClass[] = [
   },
   {
     id: 'cls-11b',
+    userId: 'usr-1',
     number: 11,
     letter: 'Б',
     subject: 'Информатика',
@@ -37,6 +65,7 @@ const defaultClasses: SchoolClass[] = [
   },
   {
     id: 'cls-10a',
+    userId: 'usr-1',
     number: 10,
     letter: 'А',
     subject: 'Физика',
@@ -46,22 +75,22 @@ const defaultClasses: SchoolClass[] = [
 ];
 
 const defaultStudents: Student[] = [
-  { id: 'std-1', classId: 'cls-11a', fullName: 'Алексеев Максим Дмитриевич', createdAt: '2026-09-01' },
-  { id: 'std-2', classId: 'cls-11a', fullName: 'Богданова Дарья Сергеевна', createdAt: '2026-09-01' },
-  { id: 'std-3', classId: 'cls-11a', fullName: 'Васильев Артем Игоревич', createdAt: '2026-09-01' },
-  { id: 'std-4', classId: 'cls-11a', fullName: 'Григорьева Екатерина Павловна', createdAt: '2026-09-01' },
-  { id: 'std-5', classId: 'cls-11a', fullName: 'Дмитриев Роман Олегович', createdAt: '2026-09-01' },
-  { id: 'std-6', classId: 'cls-11a', fullName: 'Егорова София Александровна', createdAt: '2026-09-01' },
-  { id: 'std-7', classId: 'cls-11a', fullName: 'Жуков Кирилл Андреевич', createdAt: '2026-09-01' },
-  { id: 'std-8', classId: 'cls-11a', fullName: 'Иванова Полина Денисовна', createdAt: '2026-09-01' },
+  { id: 'std-1', userId: 'usr-1', classId: 'cls-11a', fullName: 'Алексеев Максим Дмитриевич', createdAt: '2026-09-01' },
+  { id: 'std-2', userId: 'usr-1', classId: 'cls-11a', fullName: 'Богданова Дарья Сергеевна', createdAt: '2026-09-01' },
+  { id: 'std-3', userId: 'usr-1', classId: 'cls-11a', fullName: 'Васильев Артем Игоревич', createdAt: '2026-09-01' },
+  { id: 'std-4', userId: 'usr-1', classId: 'cls-11a', fullName: 'Григорьева Екатерина Павловна', createdAt: '2026-09-01' },
+  { id: 'std-5', userId: 'usr-1', classId: 'cls-11a', fullName: 'Дмитриев Роман Олегович', createdAt: '2026-09-01' },
+  { id: 'std-6', userId: 'usr-1', classId: 'cls-11a', fullName: 'Егорова София Александровна', createdAt: '2026-09-01' },
+  { id: 'std-7', userId: 'usr-1', classId: 'cls-11a', fullName: 'Жуков Кирилл Андреевич', createdAt: '2026-09-01' },
+  { id: 'std-8', userId: 'usr-1', classId: 'cls-11a', fullName: 'Иванова Полина Денисовна', createdAt: '2026-09-01' },
 
-  { id: 'std-9', classId: 'cls-11b', fullName: 'Ковалев Даниил Романович', createdAt: '2026-09-01' },
-  { id: 'std-10', classId: 'cls-11b', fullName: 'Морозов Никита Евгеньевич', createdAt: '2026-09-01' },
-  { id: 'std-11', classId: 'cls-11b', fullName: 'Новикова Алина Максимовна', createdAt: '2026-09-01' },
-  { id: 'std-12', classId: 'cls-11b', fullName: 'Павлов Владислав Викторович', createdAt: '2026-09-01' },
+  { id: 'std-9', userId: 'usr-1', classId: 'cls-11b', fullName: 'Ковалев Даниил Романович', createdAt: '2026-09-01' },
+  { id: 'std-10', userId: 'usr-1', classId: 'cls-11b', fullName: 'Морозов Никита Евгеньевич', createdAt: '2026-09-01' },
+  { id: 'std-11', userId: 'usr-1', classId: 'cls-11b', fullName: 'Новикова Алина Максимовна', createdAt: '2026-09-01' },
+  { id: 'std-12', userId: 'usr-1', classId: 'cls-11b', fullName: 'Павлов Владислав Викторович', createdAt: '2026-09-01' },
 
-  { id: 'std-13', classId: 'cls-10a', fullName: 'Семенов Илья Владимирович', createdAt: '2026-09-02' },
-  { id: 'std-14', classId: 'cls-10a', fullName: 'Федорова Мария Артемовна', createdAt: '2026-09-02' },
+  { id: 'std-13', userId: 'usr-1', classId: 'cls-10a', fullName: 'Семенов Илья Владимирович', createdAt: '2026-09-02' },
+  { id: 'std-14', userId: 'usr-1', classId: 'cls-10a', fullName: 'Федорова Мария Артемовна', createdAt: '2026-09-02' },
 ];
 
 const mathTasks = getDefaultTasksForSubject('Математика (профиль)');
@@ -70,6 +99,7 @@ const mathMax = calculateMaxPrimary(mathTasks);
 const defaultMockTests: MockTest[] = [
   {
     id: 'test-1',
+    userId: 'usr-1',
     title: 'СтатГрад №1 (Входной срез)',
     date: '2026-09-24',
     classId: 'cls-11a',
@@ -82,6 +112,7 @@ const defaultMockTests: MockTest[] = [
   },
   {
     id: 'test-2',
+    userId: 'usr-1',
     title: 'Тренировочный пробник №2 (Октябрь)',
     date: '2026-10-22',
     classId: 'cls-11a',
@@ -94,6 +125,7 @@ const defaultMockTests: MockTest[] = [
   },
   {
     id: 'test-3',
+    userId: 'usr-1',
     title: 'КЕГЭ Диагностика №1',
     date: '2026-10-15',
     classId: 'cls-11b',
@@ -191,8 +223,12 @@ export function initLocalStorage(): void {
     localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(defaultStudents));
     localStorage.setItem(STORAGE_KEYS.MOCK_TESTS, JSON.stringify(defaultMockTests));
     localStorage.setItem(STORAGE_KEYS.RESULTS, JSON.stringify(generateSeedResults()));
-    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(defaultUser));
-    localStorage.setItem(STORAGE_KEYS.TOKEN, 'mock-jwt-token-ey123456');
+    localStorage.setItem(STORAGE_KEYS.REGISTERED_USERS, JSON.stringify([defaultUser, adminUser]));
+
+    // Сайт изначально открывается со страницы входа (пользователь не залогинен)
+    localStorage.removeItem(STORAGE_KEYS.USER);
+    localStorage.removeItem(STORAGE_KEYS.TOKEN);
+
     localStorage.setItem(STORAGE_KEYS.INITIALIZED, 'true');
   }
 }
@@ -232,7 +268,19 @@ export const StorageService = {
 
   getUser(): User | null {
     const raw = localStorage.getItem(STORAGE_KEYS.USER);
-    return raw ? JSON.parse(raw) : null;
+    if (!raw) return null;
+    try {
+      const parsed = JSON.parse(raw);
+      if (!parsed.firstName && parsed.name) {
+        const parts = parsed.name.split(' ');
+        parsed.lastName = parts[0] || '';
+        parsed.firstName = parts[1] || '';
+        parsed.middleName = parts[2] || '';
+      }
+      return parsed;
+    } catch {
+      return null;
+    }
   },
   saveUser(user: User | null): void {
     if (user) {
@@ -240,6 +288,14 @@ export const StorageService = {
     } else {
       localStorage.removeItem(STORAGE_KEYS.USER);
     }
+  },
+
+  getRegisteredUsers(): User[] {
+    const raw = localStorage.getItem(STORAGE_KEYS.REGISTERED_USERS);
+    return raw ? JSON.parse(raw) : [defaultUser, adminUser];
+  },
+  saveRegisteredUsers(users: User[]): void {
+    localStorage.setItem(STORAGE_KEYS.REGISTERED_USERS, JSON.stringify(users));
   },
 
   getToken(): string | null {
